@@ -12,12 +12,12 @@
 
 
 # ENV Variables
-SERVER_PORT=8888
-DB_HOST=localhost
-DB_PORT=3306
-DB_DATABASE=simpleservicepoller
-DB_USER=root
-DB_PASSWORD=secret
+SERVER_PORT=8888<br/>
+DB_HOST=localhost<br/>
+DB_PORT=3306<br/>
+DB_DATABASE=simpleservicepoller<br/>
+DB_USER=root<br/>
+DB_PASSWORD=secret<br/>
 
 ## Dockerized MySQL
 * User: root
