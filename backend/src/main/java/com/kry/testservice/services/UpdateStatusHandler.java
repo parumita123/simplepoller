@@ -35,8 +35,8 @@ public class UpdateStatusHandler implements Handler<RoutingContext> {
 
   private void updateStatus(final RoutingContext context) {
     for (Map item : statusMap) {
-      final Map<String, Object> parameter = new HashMap<>();
       item.forEach((key, value) -> {
+        final Map<String, Object> parameter = new HashMap<>();
         parameter.put("name", key);
         parameter.put("is_active", value);
         parameterList.add(parameter);

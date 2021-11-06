@@ -1,0 +1,89 @@
+<html>
+   <head>
+      <title>Kry Poller Service</title>
+   </head>
+   <style>
+      table, tbody, th, td {
+      border:1px solid black;
+      }
+   </style>
+   <body onload="getServicesAction()">
+      <script language="javascript" type="text/javascript">
+         const getServicesAction = async () => {
+          const response = await fetch('http://localhost:8888/services');
+          const result = await response.json();
+          var tableRef = document.getElementById('serviceTable');
+          tableRef.innerHTML = "";
+         
+          for (var i=0; i<result.length; i++){
+          var createdate = new Date(result[i].created);
+          var newRow = tableRef.insertRow();
+          let serviceName = newRow.insertCell(0);
+          let url = newRow.insertCell(1);
+          let created = newRow.insertCell(2);
+          let status = newRow.insertCell(3);
+          let action = newRow.insertCell(4);
+          serviceName.innerHTML = result[i].name;
+          url.innerHTML = result[i].url;
+          created.innerHTML = createdate;
+          status.innerHTML = result[i].status;
+         
+          var element = document.createElement("button");
+         element.name = serviceName;
+         element.innerHTML = "Delete";
+         element.onclick = function() {
+         fetch("http://localhost:8888/delete/"+serviceName.innerHTML, { method: "delete" });
+         window.location.reload();
+         };
+         action.appendChild(element);
+         }
+         }
+         
+         
+         const createServiceAction = async () => {
+         const serviceName = document.getElementById("service_name_input").value;
+         const serviceUrl = document.getElementById("url_input").value;
+         var data = { name: serviceName, url: serviceUrl };
+         console.log(data);
+         const response = await fetch('http://localhost:8888/newservice', {
+          method: 'POST',
+         headers: {'Content-Type': 'application/json'},
+          body: data
+         });
+         const myJson = await response.json();
+         console.log(myJson);
+         }
+         
+         const updateStatusAction = async () => {
+         var response = await fetch('http://localhost:8888/listen', {method: 'GET'});
+         var response = await fetch('http://localhost:8888/batchUpdate', {method: 'GET'});
+         window.location.reload();
+         }
+      </script>
+      <div style="width:90%;margin:0 auto;">
+         <div style="width:10%;float: left">
+            <form id="form_id">
+               <label>Service Name: </label>
+               <input type="text" id='service_name_input'>
+               <label>Url: </label>
+               <input type="text" id='url_input'>
+            </form>
+            <button type="button" onclick="createServiceAction();">Submit</button>
+			<button type="button" onclick="updateStatusAction();">Update Status</button>
+         </div>
+         <div style="width:90%">
+            <table align="center">
+               <tr>
+                  <th>Service Name</th>
+                  <th>Url</th>
+                  <th>Created</th>
+                  <th>Status</th>
+                  <th>Action</th>
+               </tr>
+               <tbody id="serviceTable">
+               </tbody>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>

@@ -11,6 +11,10 @@ import io.vertx.sqlclient.Pool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class GetServicesHandler implements Handler<RoutingContext> {
   private static final Logger LOG = LoggerFactory.getLogger(GetServicesHandler.class);
   private final Pool db;
@@ -28,9 +32,16 @@ public class GetServicesHandler implements Handler<RoutingContext> {
         var response = new JsonArray();
         result.forEach(row -> {
           var jsonObject = new JsonObject();
+          SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+          Date date = null;
+          try {
+            date = df.parse(row.getValue("created").toString());
+          } catch (ParseException e) {
+            LOG.error("Failed to parse: " + e.getLocalizedMessage());
+          }
           jsonObject.put("name", row.getValue("name"));
           jsonObject.put("url", row.getValue("url"));
-          jsonObject.put("created", row.getValue("created"));
+          jsonObject.put("created", date);
           jsonObject.put("status", row.getValue("is_active"));
           response.add(jsonObject);
         });
